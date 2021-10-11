@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/core";
+import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -8,35 +9,102 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { auth } from "../firebase";
 
 const LoginScreen = () => {
+  //These keep track of state change of email and password fields.
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  //Navigator to go to different pages.
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsub = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.replace("Home");
+      }
+    });
+    return unsub;
+  }, []);
+
+  const emailSignUp = () => {
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
+  const emailLogin = () => {
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
           keyboardType="email-address"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
           style={styles.input}
         />
         <TextInput
           placeholder="Password"
           style={styles.input}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
           secureTextEntry
         />
       </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={emailLogin}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={emailSignUp}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Register</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {}}
+          style={[styles.button, styles.buttonOutline]}
+        >
+          <Text style={styles.buttonOutlineText}>Phone Number Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {}}
+          style={[styles.button, styles.buttonOutline]}
+        >
+          <Text style={styles.buttonOutlineText}>Facebook Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {}}
+          style={[styles.button, styles.buttonOutline]}
+        >
+          <Text style={styles.buttonOutlineText}>Google Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {}}
+          style={[styles.button, styles.buttonOutline]}
+        >
+          <Text style={styles.buttonOutlineText}>Sign in Anonymously</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -70,8 +138,8 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#0782F9",
     width: "100%",
-    padding: 15,
-    borderRadius: 10,
+    padding: 10,
+    borderRadius: 15,
     alignItems: "center",
   },
   buttonOutline: {
