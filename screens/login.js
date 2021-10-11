@@ -10,7 +10,7 @@ import {
   View,
   Button,
 } from "react-native";
-import { auth } from "../firebase";
+import { auth, firebase } from "../firebase";
 
 const LoginScreen = () => {
   //These keep track of state change of email and password fields.
@@ -59,7 +59,17 @@ const LoginScreen = () => {
 
   const FBLogin = () => {};
 
-  async function GoogleLogin() {}
+  const GoogleLogin = () => {
+    var google_provider = new firebase.auth.GoogleAuthProvider();
+    auth
+      .signInWithPopup(google_provider)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
 
   const anonymousLogin = () => {
     auth
