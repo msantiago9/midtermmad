@@ -15,11 +15,18 @@ const HomeScreen = () => {
       .catch((error) => alert(error.message));
   };
 
+  var currentUser = auth.currentUser;
+  var photoURL = "";
+  var email = "";
+  if (currentUser !== null) {
+    photoURL = currentUser.photoURL;
+    email = currentUser.email;
+  }
+
   return (
     <View style={styles.container}>
-      <Image source={auth.currentUser?.photoURL} />
-      <Text>Hello, {auth.currentUser?.displayName}!</Text>
-      <Text>Email: {auth.currentUser?.email}</Text>
+      <Image source={photoURL} />
+      <Text>Hello: {email == "" ? "Anonymous" : email}</Text>
       <TouchableOpacity onPress={handleSignOut} style={styles.button}>
         <Text style={styles.buttonText}>Sign out</Text>
       </TouchableOpacity>

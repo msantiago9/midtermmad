@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Button,
 } from "react-native";
 import { auth } from "../firebase";
 
@@ -15,6 +16,10 @@ const LoginScreen = () => {
   //These keep track of state change of email and password fields.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // If null, no SMS has been sent
+  const [confirm, setConfirm] = useState(null);
+  const [code, setCode] = useState("");
 
   //Navigator to go to different pages.
   const navigation = useNavigation();
@@ -42,6 +47,23 @@ const LoginScreen = () => {
   const emailLogin = () => {
     auth
       .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
+  const phoneNumberLogin = () => {};
+
+  const FBLogin = () => {};
+
+  async function GoogleLogin() {}
+
+  const anonymousLogin = () => {
+    auth
+      .signInAnonymously()
       .then((userCredential) => {
         const user = userCredential.user;
       })
@@ -83,7 +105,7 @@ const LoginScreen = () => {
           <Text style={styles.buttonOutlineText}>Register</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={phoneNumberLogin}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Phone Number Login</Text>
@@ -95,13 +117,13 @@ const LoginScreen = () => {
           <Text style={styles.buttonOutlineText}>Facebook Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={GoogleLogin}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Google Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={anonymousLogin}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Sign in Anonymously</Text>
